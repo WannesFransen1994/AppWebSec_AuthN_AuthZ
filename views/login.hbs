@@ -20,7 +20,7 @@
 
     <article>
         <p>Login Form</p>
-        <form>
+        <form action="/auth/login" method="POST">
             <div>
                 <label for="email-lgn">Name</label>
                 <input id="email-lgn" type="text" name="email">
@@ -33,6 +33,11 @@
 
             <button type="submit">Submit</button>
         </form>
+        <section>
+            {{#if message }}
+            <p>{{message}}</p>
+            {{/if}}
+        </section>
     </article>
 </body>
 
