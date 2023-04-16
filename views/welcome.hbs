@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
+    <title>Home</title>
 </head>
 </head>
 
@@ -21,25 +21,12 @@
     </nav>
 
     <article>
-        <p>Login Form</p>
-        <form action="/auth/login" method="POST">
-            <div>
-                <label for="email-lgn">Name</label>
-                <input id="email-lgn" type="text" name="email">
-            </div>
-
-            <div>
-                <label for="password-lgn">Password</label>
-                <input id="password-lgn" type="password" name="password">
-            </div>
-
-            <button type="submit">Submit</button>
-        </form>
         <section>
-            {{#if message }}
-            <p>{{message}}</p>
+            {{#if email }}
+            <p>Hi {{email}}</p>
             {{/if}}
         </section>
+
     </article>
 </body>
 
