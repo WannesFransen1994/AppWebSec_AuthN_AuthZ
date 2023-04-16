@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+</head>
+</head>
+
+<body>
+    <nav>
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/login">Login</a></li>
+            <li><a href="/register">Register</a></li>
+        </ul>
+    </nav>
+
+    <article>
+        <p>Register Form</p>
+        <form action="/auth/register" method="POST">
+            <div>
+                <label for="email-reg">Email</label>
+                <input id="email-reg" type="text" name="email">
+            </div>
+
+            <div>
+                <label for="password-reg" class="form-label">Password</label>
+                <input id="password-reg" type="password" name="password">
+            </div>
+
+            <div>
+                <label for="password-conf-reg">Confirm Password</label>
+                <input id="password-conf-reg" type="password" name="password_confirm">
+            </div>
+
+            <button type="submit">Submit</button>
+        </form>
+        <section>
+            {{#if message }}
+            <p>{{message}}</p>
+            {{/if}}
+        </section>
+    </article>
+</body>
+
+</html>
