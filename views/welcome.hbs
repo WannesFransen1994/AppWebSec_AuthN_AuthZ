@@ -5,6 +5,8 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+
     <title>Home</title>
 </head>
 </head>
@@ -25,6 +27,66 @@
             {{#if email }}
             <p>Hi {{email}}</p>
             {{/if}}
+        </section>
+
+        <section>
+            My wall:
+            <table id="list_table_json"></table>
+            <script type="text/javascript">
+                $(document).ready(function () {
+                    console.log("running");
+                    $.ajax({
+                        url: "http://localhost:4000/api/users/aperson/posts",
+                        dataType: 'json',
+                        type: 'get',
+                        cache: false,
+                        success: function (data) {
+                            console.log(data);
+                            var event_data = '';
+                            $.each(data, function (value) {
+                                console.log(value);
+                                event_data += '<tr>';
+                                event_data += '<td>' + data[value] + '</td>';
+                                event_data += '</tr>';
+                            });
+                            $("#list_table_json").append(event_data);
+                            console.log(event_data);
+                        },
+                        error: function (d) {
+                            alert("404. Please wait until the File is Loaded.");
+                        }
+                    });
+                });
+            </script>
+            <p></p>
+            Other wall:
+            <table id="list_table_json2"></table>
+            <script type="text/javascript">
+                $(document).ready(function () {
+                    console.log("running");
+                    $.ajax({
+                        url: "http://localhost:4001/api/users/aperson/posts",
+                        dataType: 'json',
+                        type: 'get',
+                        cache: false,
+                        success: function (data) {
+                            console.log(data);
+                            var event_data = '';
+                            $.each(data, function (value) {
+                                console.log(value);
+                                event_data += '<tr>';
+                                event_data += '<td>' + data[value] + '</td>';
+                                event_data += '</tr>';
+                            });
+                            $("#list_table_json2").append(event_data);
+                            console.log(event_data);
+                        },
+                        error: function (d) {
+                            alert("404. Please wait until the File is Loaded.");
+                        }
+                    });
+                });
+            </script>
         </section>
 
     </article>

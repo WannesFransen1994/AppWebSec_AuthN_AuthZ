@@ -34,6 +34,7 @@ app.use(cookieParser());
 
 const cookie_identifier = 'session_id';
 
+let api_data = { "aperson": { posts: ["some post", "another post"], can_view: "otherperson" } }
 
 function generate_jwt(email) {
     let jwt_header = { "alg": "HS256", "typ": "JWT" }
@@ -73,6 +74,11 @@ function unix_ts() {
 
 app.get("/", (req, res) => {
     res.render("index")
+})
+
+app.get("/api/users/:email/posts", (req, res) => {
+    res.set('Access-Control-Allow-Origin', 'http://localhost:4000')
+    res.status(200).json(api_data[req.params.email]["posts"])
 })
 
 app.get("/register", (req, res) => {
@@ -161,6 +167,6 @@ app.post("/auth/register", (req, res) => {
 
 })
 
-app.listen(4000, () => {
-    console.log("server started on port 4000")
+app.listen(process.env.DEVPORT, () => {
+    console.log("server started on port " + process.env.DEVPORT)
 })
