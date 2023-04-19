@@ -32,14 +32,9 @@ app.use(cookieParser());
 
 // === APPLICATION LOGIC ===
 
-// TODO: clean up periodically with https://stackoverflow.com/questions/1224463/is-there-any-way-to-call-a-function-periodically-in-javascript
-let memory_sessions = {};
-const session_char_length = 32;
 const cookie_identifier = 'session_id';
 
-function generate_session_key() {
-    return crypto.randomBytes(session_char_length).toString('hex')
-}
+
 function generate_jwt(email) {
     let jwt_header = { "alg": "HS256", "typ": "JWT" }
     let jwt_payload = { "email": email }
