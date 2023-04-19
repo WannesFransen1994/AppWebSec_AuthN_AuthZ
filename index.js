@@ -3,7 +3,8 @@ const express = require('express');
 const argon2 = require('argon2');
 const mysql = require("mysql2")
 const dotenv = require('dotenv')
-const crypto = require('crypto');
+const crypto = require('node:crypto');
+const { Buffer } = require('node:buffer');
 const cookieParser = require('cookie-parser')
 const app = express();
 
@@ -39,6 +40,38 @@ const cookie_identifier = 'session_id';
 function generate_session_key() {
     return crypto.randomBytes(session_char_length).toString('hex')
 }
+function generate_jwt(email) {
+    let jwt_header = { "alg": "HS256", "typ": "JWT" }
+    let jwt_payload = { "email": email }
+
+    let header_encoded = Buffer.from(JSON.stringify(jwt_header)).toString("base64url")
+    let payload_encoded = Buffer.from(JSON.stringify(jwt_payload)).toString("base64url")
+    let signature = crypto.createHmac('sha256', process.env.JWT_SECRET).update(header_encoded + "." + payload_encoded).digest("base64url");
+
+    let jwt = header_encoded + "." + payload_encoded + "." + signature;
+
+    return jwt
+}
+
+function verify_jwt(jwt) {
+    let splitted_jwt = jwt.split(".");
+
+    let tbv_header = splitted_jwt[0]
+    let tbv_payload = splitted_jwt[1]
+    let tbv_signature = splitted_jwt[2]
+
+    let valid_or_not = crypto.createHmac('sha256', process.env.JWT_SECRET).update(tbv_header + "." + tbv_payload).digest("base64url") == tbv_signature;
+
+    return valid_or_not
+}
+
+function get_jwt_payload(jwt) {
+    let splitted_jwt = jwt.split(".");
+
+    let tbv_payload = Buffer.from(splitted_jwt[1], 'base64url').toString("utf8")
+    return JSON.parse(tbv_payload)
+}
+
 function unix_ts() {
     return Math.floor(Date.now() / 1000)
 }
@@ -61,11 +94,10 @@ app.get("/logout", (req, res) => {
 })
 
 app.get("/welcome", (req, res) => {
-    console.log(memory_sessions)
-    if (!req.cookies.session_id || !memory_sessions[req.cookies.session_id]) {
+    if (!req.cookies.session_id || !verify_jwt(req.cookies.session_id)) {
         return res.render('login', { message: "log in first" })
     }
-    return res.render("welcome", { email: memory_sessions[req.cookies.session_id].email })
+    return res.render("welcome", { email: get_jwt_payload(req.cookies.session_id).email })
 })
 
 app.post("/auth/login", (req, res) => {
@@ -83,8 +115,9 @@ app.post("/auth/login", (req, res) => {
                 return res.render('login', { message: 'Invalid email/password combination' })
             } else if (await argon2.verify(result[0].hashed_password, password)) {
                 // Set session here
-                let session_id = generate_session_key();
-                memory_sessions[session_id] = { email: result[0].email, last_usage: unix_ts() }
+                // let session_id = generate_session_key();
+                // memory_sessions[session_id] = { email: result[0].email, last_usage: unix_ts() }
+                let session_id = generate_jwt(result[0].email)
                 res.cookie(cookie_identifier, session_id, { sameSite: 'Strict', httpOnly: true, secure: false, maxAge: 36000000 })
 
 
