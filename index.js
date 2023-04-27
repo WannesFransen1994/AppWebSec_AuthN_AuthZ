@@ -1,3 +1,17 @@
+// agent-secret
+const apm = require('elastic-apm-node').start({
+    // Override service name from package.json
+    // Allowed characters: a-z, A-Z, 0-9, -, _, and space
+    serviceName: 'my-nodejs-application',
+
+    // Use if APM Server requires a token
+    // secretToken: 'agent-secret',
+
+    // Set custom APM Server URL (default: http://127.0.0.1:8200)
+    // serverUrl: 'http://172.20.50.198:8200',
+    serverUrl: 'http://172.20.50.193:8200',
+})
+
 // === SETUP ===
 const express = require('express');
 const argon2 = require('argon2');
